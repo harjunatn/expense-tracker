@@ -110,17 +110,21 @@ export default function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
       </div>
 
       <div>
-        <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
           Tanggal
         </label>
-        <input
-          id="date"
-          type="date"
-          value={formData.date}
-          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-          required
-          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        />
+        <div className="relative">
+          <input
+            id="date"
+            type="date"
+            value={formData.date}
+            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            onClick={(e) => e.currentTarget.showPicker?.()}
+            required
+            className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+            style={{ WebkitAppearance: 'none', appearance: 'none' }}
+          />
+        </div>
       </div>
 
       <button
