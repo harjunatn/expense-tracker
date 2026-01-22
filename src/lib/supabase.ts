@@ -60,3 +60,25 @@ export const insertExpense = async (expense: {
 
   return data
 }
+
+export const updateExpense = async (
+  id: string,
+  updates: {
+    amount?: number
+    category?: string
+    description?: string | null
+  }
+): Promise<Expense> => {
+  const { data, error } = await supabase
+    .from('expenses')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}

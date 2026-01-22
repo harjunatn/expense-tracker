@@ -93,7 +93,7 @@ export default function TransactionsList() {
           <p>Memuat...</p>
         </div>
       ) : (
-        <ExpenseList expenses={expenses} />
+        <ExpenseList expenses={expenses} onExpenseUpdated={fetchExpenses} />
       )}
     </div>
   )
