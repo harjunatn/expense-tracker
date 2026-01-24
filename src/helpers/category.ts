@@ -1,4 +1,4 @@
-import { Category } from '../types/expense'
+import { Category } from '../types/category'
 
 export const getCategoryColor = (category: Category): string => {
   const colors: Record<Category, string> = {

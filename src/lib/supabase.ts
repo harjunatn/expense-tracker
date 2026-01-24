@@ -47,6 +47,8 @@ export const insertExpense = async (expense: {
   category: string
   description: string | null
   date: string
+  bank: string
+  transaction_type: string
 }): Promise<Expense> => {
   const { data, error } = await supabase
     .from('expenses')
@@ -67,6 +69,8 @@ export const updateExpense = async (
     amount?: number
     category?: string
     description?: string | null
+    bank?: string
+    transaction_type?: string
   }
 ): Promise<Expense> => {
   const { data, error } = await supabase

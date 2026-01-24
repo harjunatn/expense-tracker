@@ -1,11 +1,15 @@
 import { useState } from 'react'
-import { Expense, Category } from '../types/expense'
+import { Expense } from '../types/expense'
+import { Category } from '../types/category'
+import { Bank } from '../types/bank'
+import { TransactionType } from '../types/transactionType'
 import { formatCurrency, formatNumber, parseNumber } from '../helpers/currency'
 import { formatDate } from '../helpers/date'
 import { getCategoryColor } from '../helpers/category'
 import { updateExpense } from '../lib/supabase'
-
-const CATEGORIES: Category[] = ['Makan', 'Transport', 'Kopi', 'Belanja', 'Tagihan', 'Lainnya']
+import { CATEGORIES } from '../constants/categories'
+import { BANKS } from '../constants/banks'
+import { TRANSACTION_TYPES } from '../constants/transactionTypes'
 
 interface ExpenseListProps {
   expenses: Expense[]
@@ -23,6 +27,8 @@ function ExpenseItem({ expense, onExpenseUpdated }: ExpenseItemProps) {
   const [editedAmount, setEditedAmount] = useState(expense.amount)
   const [editedDescription, setEditedDescription] = useState(expense.description || '')
   const [editedCategory, setEditedCategory] = useState<Category>(expense.category)
+  const [editedBank, setEditedBank] = useState<Bank>(expense.bank)
+  const [editedTransactionType, setEditedTransactionType] = useState<TransactionType>(expense.transaction_type)
 
   const handleSave = async () => {
     if (editedAmount <= 0) {
@@ -36,6 +42,8 @@ function ExpenseItem({ expense, onExpenseUpdated }: ExpenseItemProps) {
         amount: Math.round(editedAmount),
         category: editedCategory,
         description: editedDescription.trim() || null,
+        bank: editedBank,
+        transaction_type: editedTransactionType,
       })
       setIsEditing(false)
       onExpenseUpdated()
@@ -51,6 +59,8 @@ function ExpenseItem({ expense, onExpenseUpdated }: ExpenseItemProps) {
     setEditedAmount(expense.amount)
     setEditedDescription(expense.description || '')
     setEditedCategory(expense.category)
+    setEditedBank(expense.bank)
+    setEditedTransactionType(expense.transaction_type)
     setIsEditing(false)
   }
 
@@ -78,6 +88,34 @@ function ExpenseItem({ expense, onExpenseUpdated }: ExpenseItemProps) {
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Bank</label>
+            <select
+              value={editedBank}
+              onChange={(e) => setEditedBank(e.target.value as Bank)}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              {BANKS.map((bank) => (
+                <option key={bank} value={bank}>
+                  {bank}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Tipe Transaksi</label>
+            <select
+              value={editedTransactionType}
+              onChange={(e) => setEditedTransactionType(e.target.value as TransactionType)}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              {TRANSACTION_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {type}
                 </option>
               ))}
             </select>
@@ -120,7 +158,12 @@ function ExpenseItem({ expense, onExpenseUpdated }: ExpenseItemProps) {
           {expense.description && (
             <p className="text-sm text-gray-900 mb-1 line-clamp-2">{expense.description}</p>
           )}
-          <p className="text-xs text-gray-500">{formatDate(expense.date)}</p>
+          <p className="text-xs text-gray-500 mb-1">{formatDate(expense.date)}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-gray-400">{expense.bank}</span>
+            <span className="text-xs text-gray-400">•</span>
+            <span className="text-xs text-gray-400">{expense.transaction_type}</span>
+          </div>
         </div>
         <div className="flex-shrink-0 flex flex-col items-end gap-2">
           <span className="text-lg font-semibold text-gray-900 whitespace-nowrap">

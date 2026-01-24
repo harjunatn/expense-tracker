@@ -1,4 +1,6 @@
-export type Category = 'Makan' | 'Transport' | 'Kopi' | 'Belanja' | 'Tagihan' | 'Lainnya'
+import { Category } from './category'
+import { Bank } from './bank'
+import { TransactionType } from './transactionType'
 
 export interface Expense {
   id: string
@@ -6,6 +8,8 @@ export interface Expense {
   category: Category
   description: string | null
   date: string
+  bank: Bank
+  transaction_type: TransactionType
   created_at: string
 }
 
@@ -14,4 +18,6 @@ export interface ExpenseFormData {
   category: Category
   description: string
   date: string
+  bank: Bank
+  transaction_type: TransactionType
 }

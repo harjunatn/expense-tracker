@@ -3,7 +3,8 @@ import ExpenseForm from '../components/ExpenseForm'
 import ExpenseList from '../components/ExpenseList'
 import Filters from '../components/Filters'
 import { getExpenses } from '../lib/supabase'
-import { Expense, Category } from '../types/expense'
+import { Expense } from '../types/expense'
+import { Category } from '../types/category'
 
 export default function Home() {
   const [expenses, setExpenses] = useState<Expense[]>([])

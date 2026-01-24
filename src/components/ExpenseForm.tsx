@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Category, ExpenseFormData } from '../types/expense'
+import { ExpenseFormData } from '../types/expense'
 import { insertExpense } from '../lib/supabase'
 import { formatNumber, parseNumber } from '../helpers/currency'
-
-const CATEGORIES: Category[] = ['Makan', 'Transport', 'Kopi', 'Belanja', 'Tagihan', 'Lainnya']
+import { CATEGORIES } from '../constants/categories'
+import { BANKS } from '../constants/banks'
+import { TRANSACTION_TYPES } from '../constants/transactionTypes'
 
 interface ExpenseFormProps {
   onExpenseAdded: () => void
@@ -15,6 +16,8 @@ export default function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
     category: 'Makan',
     description: '',
     date: new Date().toISOString().split('T')[0],
+    bank: 'BCA',
+    transaction_type: 'TRANSFER',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -33,6 +36,8 @@ export default function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
         category: formData.category,
         description: formData.description.trim() || null,
         date: formData.date,
+        bank: formData.bank,
+        transaction_type: formData.transaction_type,
       })
 
       setFormData({
@@ -40,6 +45,8 @@ export default function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
         category: 'Makan',
         description: '',
         date: new Date().toISOString().split('T')[0],
+        bank: 'BCA',
+        transaction_type: 'TRANSFER',
       })
 
       onExpenseAdded()
@@ -83,13 +90,51 @@ export default function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
         <select
           id="category"
           value={formData.category}
-          onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })}
+          onChange={(e) => setFormData({ ...formData, category: e.target.value as ExpenseFormData['category'] })}
           required
           className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           {CATEGORIES.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="bank" className="block text-sm font-medium text-gray-700 mb-2">
+          Bank
+        </label>
+        <select
+          id="bank"
+          value={formData.bank}
+          onChange={(e) => setFormData({ ...formData, bank: e.target.value as ExpenseFormData['bank'] })}
+          required
+          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          {BANKS.map((bank) => (
+            <option key={bank} value={bank}>
+              {bank}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="transaction_type" className="block text-sm font-medium text-gray-700 mb-2">
+          Tipe Transaksi
+        </label>
+        <select
+          id="transaction_type"
+          value={formData.transaction_type}
+          onChange={(e) => setFormData({ ...formData, transaction_type: e.target.value as ExpenseFormData['transaction_type'] })}
+          required
+          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          {TRANSACTION_TYPES.map((type) => (
+            <option key={type} value={type}>
+              {type}
             </option>
           ))}
         </select>

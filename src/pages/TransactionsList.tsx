@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import ExpenseList from '../components/ExpenseList'
 import Filters from '../components/Filters'
 import { getExpenses } from '../lib/supabase'
-import { Expense, Category } from '../types/expense'
+import { Expense } from '../types/expense'
+import { Category } from '../types/category'
 import { formatCurrency } from '../helpers/currency'
 
 export default function TransactionsList() {

@@ -1,4 +1,5 @@
-import { Category } from '../types/expense'
+import { Category } from '../types/category'
+import { CATEGORIES } from '../constants/categories'
 
 interface FiltersProps {
   selectedCategory: Category | ''
@@ -6,8 +7,6 @@ interface FiltersProps {
   onCategoryChange: (category: Category | '') => void
   onMonthChange: (month: string) => void
 }
-
-const CATEGORIES: Category[] = ['Makan', 'Transport', 'Kopi', 'Belanja', 'Tagihan', 'Lainnya']
 
 export default function Filters({
   selectedCategory,
