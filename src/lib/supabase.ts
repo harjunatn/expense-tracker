@@ -14,6 +14,7 @@ export const getExpenses = async (filters?: {
   category?: string
   dateFrom?: string
   dateTo?: string
+  filterType?: 'month' | 'date'
 }): Promise<Expense[]> => {
   let query = supabase
     .from('expenses')
@@ -25,12 +26,40 @@ export const getExpenses = async (filters?: {
     query = query.eq('category', filters.category)
   }
 
-  if (filters?.dateFrom) {
-    query = query.gte('date', filters.dateFrom)
+  let dateFrom = filters?.dateFrom
+  let dateTo = filters?.dateTo
+
+  // Apply default date ranges if not provided
+  if (!dateFrom || !dateTo) {
+    const now = new Date()
+    const filterType = filters?.filterType || 'month'
+
+    if (filterType === 'month') {
+      // Default to current month
+      const year = now.getFullYear()
+      const month = String(now.getMonth() + 1).padStart(2, '0')
+      dateFrom = dateFrom || `${year}-${month}-01`
+      const lastDay = new Date(year, now.getMonth() + 1, 0).getDate()
+      dateTo = dateTo || `${year}-${month}-${String(lastDay).padStart(2, '0')}`
+    } else if (filterType === 'date') {
+      // Default to last 14 days
+      const toDate = new Date(now)
+      toDate.setHours(23, 59, 59, 999)
+      const fromDate = new Date(now)
+      fromDate.setDate(fromDate.getDate() - 14)
+      fromDate.setHours(0, 0, 0, 0)
+      
+      dateTo = dateTo || toDate.toISOString().split('T')[0]
+      dateFrom = dateFrom || fromDate.toISOString().split('T')[0]
+    }
   }
 
-  if (filters?.dateTo) {
-    query = query.lte('date', filters.dateTo)
+  if (dateFrom) {
+    query = query.gte('date', dateFrom)
+  }
+
+  if (dateTo) {
+    query = query.lte('date', dateTo)
   }
 
   const { data, error } = await query

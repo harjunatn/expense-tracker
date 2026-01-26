@@ -5,6 +5,7 @@ import Filters from '../components/Filters'
 import { getExpenses } from '../lib/supabase'
 import { Expense } from '../types/expense'
 import { Category } from '../types/category'
+import { FilterType } from '../types/filterType'
 import { formatCurrency } from '../helpers/currency'
 
 export default function TransactionsList() {
@@ -12,10 +13,23 @@ export default function TransactionsList() {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<Category | ''>('')
+  const [filterType, setFilterType] = useState<FilterType>('month')
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const now = new Date()
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   })
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
+
+  const handleFilterTypeChange = (type: FilterType) => {
+    setFilterType(type)
+    if (type === 'month') {
+      setDateFrom('')
+      setDateTo('')
+    } else {
+      setSelectedMonth('')
+    }
+  }
 
   const fetchExpenses = async () => {
     setIsLoading(true)
@@ -30,14 +44,26 @@ export default function TransactionsList() {
         filters.category = selectedCategory
       }
 
-      if (selectedMonth) {
-        const [year, month] = selectedMonth.split('-')
-        filters.dateFrom = `${year}-${month}-01`
-        const lastDay = new Date(Number(year), Number(month), 0).getDate()
-        filters.dateTo = `${year}-${month}-${String(lastDay).padStart(2, '0')}`
+      // Only set date filters if explicitly provided, otherwise let getExpenses use defaults
+      if (filterType === 'date' && dateFrom && dateTo) {
+        filters.dateFrom = dateFrom
+        filters.dateTo = dateTo
+      } else if (filterType === 'month' && selectedMonth) {
+        // Only set if month is explicitly different from current month
+        const now = new Date()
+        const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+        if (selectedMonth !== currentMonth) {
+          const [year, month] = selectedMonth.split('-')
+          filters.dateFrom = `${year}-${month}-01`
+          const lastDay = new Date(Number(year), Number(month), 0).getDate()
+          filters.dateTo = `${year}-${month}-${String(lastDay).padStart(2, '0')}`
+        }
       }
 
-      const data = await getExpenses(filters)
+      const data = await getExpenses({
+        ...filters,
+        filterType,
+      })
       setExpenses(data)
     } catch (error) {
       console.error('Error fetching expenses:', error)
@@ -53,7 +79,7 @@ export default function TransactionsList() {
 
   useEffect(() => {
     fetchExpenses()
-  }, [selectedCategory, selectedMonth])
+  }, [selectedCategory, filterType, selectedMonth, dateFrom, dateTo])
 
   const totalExpense = useMemo(() => {
     return expenses.reduce((sum, expense) => sum + expense.amount, 0)
@@ -75,9 +101,15 @@ export default function TransactionsList() {
 
       <Filters
         selectedCategory={selectedCategory}
+        filterType={filterType}
         selectedMonth={selectedMonth}
+        dateFrom={dateFrom}
+        dateTo={dateTo}
         onCategoryChange={setSelectedCategory}
+        onFilterTypeChange={handleFilterTypeChange}
         onMonthChange={setSelectedMonth}
+        onDateFromChange={setDateFrom}
+        onDateToChange={setDateTo}
       />
 
       {!isLoading && (
