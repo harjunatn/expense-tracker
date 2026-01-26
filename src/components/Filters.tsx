@@ -3,12 +3,12 @@ import { FilterType } from '../types/filterType'
 import { CATEGORIES } from '../constants/categories'
 
 interface FiltersProps {
-  selectedCategory: Category | ''
+  selectedCategory: Category | '' | 'NOT_TAGIHAN'
   filterType: FilterType
   selectedMonth: string
   dateFrom: string
   dateTo: string
-  onCategoryChange: (category: Category | '') => void
+  onCategoryChange: (category: Category | '' | 'NOT_TAGIHAN') => void
   onFilterTypeChange: (type: FilterType) => void
   onMonthChange: (month: string) => void
   onDateFromChange: (date: string) => void
@@ -36,10 +36,11 @@ export default function Filters({
         <select
           id="category-filter"
           value={selectedCategory}
-          onChange={(e) => onCategoryChange(e.target.value as Category | '')}
+          onChange={(e) => onCategoryChange(e.target.value as Category | '' | 'NOT_TAGIHAN')}
           className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="">Semua</option>
+          <option value="NOT_TAGIHAN">Semua Kecuali Tagihan</option>
           {CATEGORIES.map((cat) => (
             <option key={cat} value={cat}>
               {cat}

@@ -22,7 +22,9 @@ export const getExpenses = async (filters?: {
     .order('date', { ascending: false })
     .order('created_at', { ascending: false })
 
-  if (filters?.category) {
+  if (filters?.category === 'NOT_TAGIHAN') {
+    query = query.neq('category', 'Tagihan')
+  } else if (filters?.category) {
     query = query.eq('category', filters.category)
   }
 

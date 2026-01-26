@@ -12,7 +12,7 @@ export default function TransactionsList() {
   const navigate = useNavigate()
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState<Category | ''>('')
+  const [selectedCategory, setSelectedCategory] = useState<Category | '' | 'NOT_TAGIHAN'>('')
   const [filterType, setFilterType] = useState<FilterType>('month')
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const now = new Date()
