@@ -1,14 +1,22 @@
 import { Category } from '../types/category'
 import { FilterType } from '../types/filterType'
+import { Bank } from '../types/bank'
+import { TransactionType } from '../types/transactionType'
 import { CATEGORIES } from '../constants/categories'
+import { BANKS } from '../constants/banks'
+import { TRANSACTION_TYPES } from '../constants/transactionTypes'
 
 interface FiltersProps {
   selectedCategory: Category | '' | 'NOT_TAGIHAN'
+  selectedBank: Bank | ''
+  selectedTransactionType: TransactionType | ''
   filterType: FilterType
   selectedMonth: string
   dateFrom: string
   dateTo: string
   onCategoryChange: (category: Category | '' | 'NOT_TAGIHAN') => void
+  onBankChange: (bank: Bank | '') => void
+  onTransactionTypeChange: (type: TransactionType | '') => void
   onFilterTypeChange: (type: FilterType) => void
   onMonthChange: (month: string) => void
   onDateFromChange: (date: string) => void
@@ -17,11 +25,15 @@ interface FiltersProps {
 
 export default function Filters({
   selectedCategory,
+  selectedBank,
+  selectedTransactionType,
   filterType,
   selectedMonth,
   dateFrom,
   dateTo,
   onCategoryChange,
+  onBankChange,
+  onTransactionTypeChange,
   onFilterTypeChange,
   onMonthChange,
   onDateFromChange,
@@ -29,24 +41,64 @@ export default function Filters({
 }: FiltersProps) {
   return (
     <div className="space-y-4 p-4 bg-white border-b">
-      <div>
-        <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-2">
-          Kategori
-        </label>
-        <select
-          id="category-filter"
-          value={selectedCategory}
-          onChange={(e) => onCategoryChange(e.target.value as Category | '' | 'NOT_TAGIHAN')}
-          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Semua</option>
-          <option value="NOT_TAGIHAN">Semua Kecuali Tagihan</option>
-          {CATEGORIES.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
+      <div className="grid grid-cols-3 gap-3">
+        <div>
+          <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-2">
+            Kategori
+          </label>
+          <select
+            id="category-filter"
+            value={selectedCategory}
+            onChange={(e) => onCategoryChange(e.target.value as Category | '' | 'NOT_TAGIHAN')}
+            className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Semua</option>
+            <option value="NOT_TAGIHAN">Kecuali Tagihan</option>
+            {CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="bank-filter" className="block text-sm font-medium text-gray-700 mb-2">
+            Bank
+          </label>
+          <select
+            id="bank-filter"
+            value={selectedBank}
+            onChange={(e) => onBankChange(e.target.value as Bank | '')}
+            className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Semua</option>
+            {BANKS.map((bank) => (
+              <option key={bank} value={bank}>
+                {bank}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="transaction-type-filter" className="block text-sm font-medium text-gray-700 mb-2">
+            Tipe
+          </label>
+          <select
+            id="transaction-type-filter"
+            value={selectedTransactionType}
+            onChange={(e) => onTransactionTypeChange(e.target.value as TransactionType | '')}
+            className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Semua</option>
+            {TRANSACTION_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div>

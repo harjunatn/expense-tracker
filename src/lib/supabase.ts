@@ -12,6 +12,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export const getExpenses = async (filters?: {
   category?: string
+  bank?: string
+  transaction_type?: string
   dateFrom?: string
   dateTo?: string
   filterType?: 'month' | 'date'
@@ -26,6 +28,14 @@ export const getExpenses = async (filters?: {
     query = query.neq('category', 'Tagihan')
   } else if (filters?.category) {
     query = query.eq('category', filters.category)
+  }
+
+  if (filters?.bank) {
+    query = query.eq('bank', filters.bank)
+  }
+
+  if (filters?.transaction_type) {
+    query = query.eq('transaction_type', filters.transaction_type)
   }
 
   let dateFrom = filters?.dateFrom
